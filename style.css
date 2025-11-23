@@ -1,0 +1,285 @@
+:root {
+    --primary-color: #4CAF50;
+    --primary-dark: #388E3C;
+    --accent-color: #FFC107;
+    --text-color: #333;
+    --bg-color: #f0f4f8;
+    --card-bg: #ffffff;
+    --error-color: #F44336;
+    --success-color: #4CAF50;
+    --font-main: 'M PLUS Rounded 1c', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-main);
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+.app-container {
+    width: 100%;
+    max-width: 480px;
+    background: var(--card-bg);
+    min-height: 100vh;
+    position: relative;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+    display: flex;
+    flex-direction: column;
+}
+
+@media (min-width: 481px) {
+    .app-container {
+        min-height: 800px;
+        height: 800px;
+        border-radius: 24px;
+        overflow: hidden;
+    }
+}
+
+.hidden {
+    display: none !important;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.screen {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+    transition: opacity 0.3s ease;
+}
+
+.screen.hidden {
+    display: none;
+    opacity: 0;
+}
+
+.screen.active {
+    display: flex;
+    opacity: 1;
+}
+
+/* Start Screen */
+#start-screen {
+    justify-content: center;
+    text-align: center;
+    background: linear-gradient(135deg, #a8e063 0%, #56ab2f 100%);
+    color: white;
+}
+
+.logo-area h1 {
+    font-size: 2.5rem;
+    margin-bottom: 0.5rem;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.subtitle {
+    font-size: 1.2rem;
+    opacity: 0.9;
+    margin-bottom: 2rem;
+}
+
+.description {
+    font-size: 1.1rem;
+    margin-bottom: 3rem;
+    line-height: 1.6;
+}
+
+/* Buttons */
+.primary-btn,
+.secondary-btn {
+    padding: 1rem 2.5rem;
+    font-size: 1.2rem;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    font-family: var(--font-main);
+    font-weight: 700;
+    transition: transform 0.1s, box-shadow 0.1s;
+}
+
+.primary-btn {
+    background-color: white;
+    color: var(--primary-dark);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.primary-btn:active {
+    transform: scale(0.98);
+}
+
+.secondary-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+/* Quiz Screen */
+.quiz-header {
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    font-weight: 700;
+    color: #666;
+}
+
+.question-card {
+    background: white;
+    border-radius: 20px;
+    padding: 2rem;
+    width: 100%;
+    text-align: center;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.05);
+}
+
+.item-icon {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+}
+
+#question-item {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+    color: var(--primary-dark);
+}
+
+.options-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1rem;
+    width: 100%;
+}
+
+.option-btn {
+    padding: 1.5rem 0.5rem;
+    border: 2px solid #eee;
+    background: white;
+    border-radius: 16px;
+    font-size: 1rem;
+    font-weight: 700;
+    color: #555;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-family: var(--font-main);
+}
+
+.option-btn:hover {
+    border-color: var(--primary-color);
+    background-color: #f9fff9;
+}
+
+/* Feedback Overlay */
+.feedback-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 10;
+    animation: fadeIn 0.2s ease-out;
+}
+
+.feedback-content {
+    text-align: center;
+    padding: 2rem;
+    max-width: 80%;
+}
+
+.feedback-icon {
+    font-size: 5rem;
+    margin-bottom: 1rem;
+}
+
+#feedback-title {
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+#feedback-text {
+    font-size: 1.1rem;
+    color: #555;
+    margin-bottom: 2rem;
+    line-height: 1.5;
+}
+
+.correct {
+    color: var(--success-color);
+}
+
+.incorrect {
+    color: var(--error-color);
+}
+
+.trivia-box {
+    margin-top: 1.5rem;
+    padding: 1rem;
+    background-color: #e3f2fd;
+    border-radius: 12px;
+    border-left: 5px solid #2196F3;
+    text-align: left;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+}
+
+.trivia-icon {
+    font-size: 1.5rem;
+}
+
+.trivia-text {
+    font-size: 0.95rem;
+    color: #0d47a1;
+    line-height: 1.5;
+    margin: 0;
+}
+
+/* Result Screen */
+#result-screen {
+    justify-content: center;
+    text-align: center;
+}
+
+.final-score {
+    font-size: 4rem;
+    font-weight: 900;
+    color: var(--primary-color);
+    margin: 2rem 0;
+}
+
+#result-message {
+    font-size: 1.2rem;
+    margin-bottom: 3rem;
+}
+
+#restart-btn {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
