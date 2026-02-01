@@ -1,0 +1,33 @@
+version: 1
+disable_existing_loggers: false
+formatters:
+  standard:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    datefmt: "%Y-%m-%d %H:%M:%S"
+
+handlers:
+  console:
+    class: logging.StreamHandler
+    level: INFO
+    formatter: standard
+    stream: ext://sys.stdout
+
+  file:
+    class: logging.handlers.TimedRotatingFileHandler
+    level: INFO
+    formatter: standard
+    filename: log/server.log
+    when: midnight
+    interval: 1
+    backupCount: 30
+    encoding: utf8
+
+loggers:
+  TrachQuizServer:
+    level: INFO
+    handlers: [console, file]
+    propagate: no
+
+root:
+  level: INFO
+  handlers: [console]

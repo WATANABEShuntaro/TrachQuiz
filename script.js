@@ -45,10 +45,47 @@ document.addEventListener('DOMContentLoaded', () => {
             startBtn.addEventListener('click', startQuiz);
             nextBtn.addEventListener('click', nextQuestion);
             restartBtn.addEventListener('click', resetQuiz);
+
+            // Connect to WebSocket server for NFC interactions
+            connectWebSocket();
+
         } catch (error) {
             console.error('Failed to load rules:', error);
             alert('ルールデータの読み込みに失敗しました。');
         }
+    }
+
+    // WebSocket Connection
+    function connectWebSocket() {
+        console.log('Attempting to connect to WebSocket...');
+        const ws = new WebSocket('ws://localhost:8000/ws');
+
+        ws.onopen = () => {
+            console.log('WebSocket connected');
+        };
+
+        ws.onmessage = (event) => {
+            console.log('WebSocket raw message received:', event.data);
+            try {
+                const data = JSON.parse(event.data);
+                console.log('WebSocket parsed data:', data);
+                if (data.type === 'answer' && data.category) {
+                    handleAnswer(data.category);
+                }
+            } catch (e) {
+                console.error('Error processing WebSocket message:', e);
+            }
+        };
+
+        ws.onclose = () => {
+            console.log('WebSocket disconnected. Retrying in 3 seconds...');
+            setTimeout(connectWebSocket, 3000);
+        };
+
+        ws.onerror = (err) => {
+            console.error('WebSocket error:', err);
+            ws.close();
+        };
     }
 
     function startQuiz() {
