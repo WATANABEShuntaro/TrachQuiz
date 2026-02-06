@@ -34,9 +34,32 @@
 > 一旦、この状態でGithub Pagesで公開したい
 
 ## 使い方
-1. `index.html` をブラウザで開くか、ローカルサーバーを立ち上げてアクセスします。
-   ```bash
-   python3 -m http.server 8080
+
+### 準備
+
+**Windows 11 Only**
+
+1. [Zadig](http://zadig.akeo.ie/)をダウンロード
+2. NFCリーダーを接続
+3. ダウンロードしたzadig-2.9.exeを実行
+4. Options -> List All Devicesをクリック
+![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/101760/5d6f3f76-32d8-4a6d-b305-5866d0bb9ad0.png)
+5. ACR122Uを選択
+![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/101760/8d2ae414-baf6-4f9d-bfd1-d3e7071e68a3.png)
+6. Install Driverをクリック
+7. [libusb](https://libusb.info)をダウンロード (Downloads -> Latest Windows Binaries).
+8. libusb-1.0.29.7zを解凍
+  [7zip](https://www.7-zip.org/download.html)など
+9. 下記ファイルをコピー
+   * MS64\dll\libusb-1.0.dll → C:\Windows\System32
+   * MS32\dll\libusb-1.0.dll → C:\Windows\SysWOW64
+
+
+### 立ち上げ
+
+1. ローカルサーバーを立ち上げます
+   ```
+   start_server.bat
    ```
 2. `http://localhost:8080` にアクセスします。
 

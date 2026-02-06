@@ -1,0 +1,10 @@
+{
+  "A7D9B498": "burnable",
+  "A72AFA98": "non_burnable",
+  "97D7EE98": "recyclable",
+  "87C88C98": "oversized",
+  "9712EA98": "hazardous",
+  "11111111": "uncollectible",
+  "11111112": "trye",
+  "11111113": "false"
+}

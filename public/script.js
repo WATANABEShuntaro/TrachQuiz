@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function init() {
         try {
-            const response = await fetch(`rules/${currentCity}.json`);
+            const response = await fetch(`./api/rules/${currentCity}`);
             rules = await response.json();
             console.log('Rules loaded:', rules);
 
@@ -58,7 +58,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // WebSocket Connection
     function connectWebSocket() {
         console.log('Attempting to connect to WebSocket...');
-        const ws = new WebSocket('ws://localhost:8000/ws');
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        const ws = new WebSocket(`${protocol}//${window.location.host}/api/ws`);
 
         ws.onopen = () => {
             console.log('WebSocket connected');

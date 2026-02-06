@@ -1,0 +1,136 @@
+2026-02-06 01:16:20 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:16:20 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:16:20 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:025
+2026-02-06 01:16:23 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=87C88C98
+2026-02-06 01:16:23 - TrachQuizServer - INFO - UID detected: 87C88C98
+2026-02-06 01:16:23 - TrachQuizServer - INFO - UID 87C88C98 not found in mapping.
+2026-02-06 01:17:38 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:17:38 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:17:39 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:026
+2026-02-06 01:17:41 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=87C88C98
+2026-02-06 01:19:00 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:19:00 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:19:01 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:027
+2026-02-06 01:19:03 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=87C88C98
+2026-02-06 01:20:02 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:20:02 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:20:02 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:028
+2026-02-06 01:20:06 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=87C88C98
+2026-02-06 01:23:29 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:23:29 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:23:30 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:029
+2026-02-06 01:23:33 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=87C88C98
+2026-02-06 01:25:42 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:25:42 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:25:43 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:030
+2026-02-06 01:31:06 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:31:06 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:31:06 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:034
+2026-02-06 01:31:16 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:31:16 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:31:16 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:034
+2026-02-06 01:33:02 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:33:02 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:33:02 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:034
+2026-02-06 01:41:47 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:41:47 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:41:47 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:037
+2026-02-06 01:44:02 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:44:02 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:44:02 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:038
+2026-02-06 01:44:05 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:05 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:05 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:06 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:06 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:06 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:07 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:07 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:07 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:07 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:07 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:07 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:08 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:08 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:08 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:08 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:08 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:08 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:10 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:10 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:10 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:10 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:10 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:10 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:11 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:11 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:11 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:11 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:11 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:11 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:12 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:12 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:12 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:44:12 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:44:12 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:44:12 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:49:30 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 01:49:30 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 01:49:30 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:038
+2026-02-06 01:49:32 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:49:32 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:49:32 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:49:33 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:49:33 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:49:33 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:49:33 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:49:33 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:49:33 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 01:49:34 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=9712EA98
+2026-02-06 01:49:34 - TrachQuizServer - INFO - UID detected: 9712EA98
+2026-02-06 01:49:34 - TrachQuizServer - INFO - UID 9712EA98 not found in mapping.
+2026-02-06 18:38:28 - TrachQuizServer - INFO - Server starting up...
+2026-02-06 18:38:28 - TrachQuizServer - INFO - NFC Worker started...
+2026-02-06 18:38:28 - TrachQuizServer - INFO - NFC Reader opened: ACS ACR122U PN532v1.6 at usb:001:002
+2026-02-06 18:38:33 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:38:33 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:38:33 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:38:34 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:38:34 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:38:34 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:38:35 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:38:35 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:38:35 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:38:35 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:38:35 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:38:35 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:43:39 - TrachQuizServer - INFO - Client connected. Active connections: 1
+2026-02-06 18:44:03 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:03 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:03 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:03 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:03 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:03 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:04 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:04 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:04 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:16 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:16 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:16 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:17 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:17 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:17 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:18 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:18 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:18 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:18 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:18 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:18 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:19 - TrachQuizServer - INFO - Tag detected details: Type2Tag ID=A7D9B498
+2026-02-06 18:44:19 - TrachQuizServer - INFO - UID detected: A7D9B498
+2026-02-06 18:44:19 - TrachQuizServer - INFO - UID A7D9B498 not found in mapping.
+2026-02-06 18:44:54 - TrachQuizServer - INFO - Client disconnected. Active connections: 0
+2026-02-06 18:44:54 - TrachQuizServer - INFO - Client connected. Active connections: 1
+2026-02-06 19:06:47 - TrachQuizServer - INFO - Client disconnected. Active connections: 0
+2026-02-06 19:50:16 - TrachQuizServer - INFO - Client connected. Active connections: 1
+2026-02-06 20:05:41 - TrachQuizServer - INFO - Client disconnected. Active connections: 0
