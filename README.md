@@ -39,21 +39,30 @@
 
 **Windows 11 Only**
 
-1. [Zadig](http://zadig.akeo.ie/)をダウンロード
-2. NFCリーダーを接続
-3. ダウンロードしたzadig-2.9.exeを実行
-4. Options -> List All Devicesをクリック
-![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/101760/5d6f3f76-32d8-4a6d-b305-5866d0bb9ad0.png)
-5. ACR122Uを選択
-![image.png](https://qiita-image-store.s3.ap-northeast-1.amazonaws.com/0/101760/8d2ae414-baf6-4f9d-bfd1-d3e7071e68a3.png)
-6. Install Driverをクリック
-7. [libusb](https://libusb.info)をダウンロード (Downloads -> Latest Windows Binaries).
-8. libusb-1.0.29.7zを解凍
+1. Pythonをインストール
+   Microsoft Storeから「Python Install Manager」でインストール
+   ![PythonInstallManager.png](images/PythonInstallManager.png)
+2. Build Tools for Visual Studio
+   1. [Build Tools for Visual Studio](https://visualstudio.microsoft.com/ja/downloads/?q=build+tools)からBuild Tools for Visual Studioをダウンロード
+   ![DevTools.png](images/DevTools.png)
+   2. 「C++によるデスクトップ開発」と「MSVC v143 - VS 2022 C++」にチェックを入れてインストール
+   ![vs_BuildTools.png](images/vs_BuildTools.png)
+3. Zadig
+   1. [Zadig](http://zadig.akeo.ie/)をダウンロード
+   2. NFCリーダーを接続
+   3. ダウンロードしたzadig-2.9.exeを実行
+   4. Options -> List All Devicesをクリック
+   ![ListAll.png](images/ListAll.png)
+   5. ACR122Uを選択
+   ![selectDevuice.png](images/selectDevuice.png)
+   6. Install Driverをクリック
+4. libusb
+   1. [libusb](https://libusb.info)をダウンロード (Downloads -> Latest Windows Binaries).
+   2. libusb-1.0.29.7zを解凍
   [7zip](https://www.7-zip.org/download.html)など
-9. 下記ファイルをコピー
+   3. 下記ファイルをコピー
    * MS64\dll\libusb-1.0.dll → C:\Windows\System32
    * MS32\dll\libusb-1.0.dll → C:\Windows\SysWOW64
-
 
 ### 立ち上げ
 
