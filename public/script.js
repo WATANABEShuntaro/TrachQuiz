@@ -1,6 +1,5 @@
 document.addEventListener('DOMContentLoaded', () => {
     // State
-    let currentCity = 'aizuwakamatsu';
     let rules = null;
     let currentQuestions = [];
     let currentQuestionIndex = 0;
@@ -11,8 +10,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const startScreen = document.getElementById('start-screen');
     const quizScreen = document.getElementById('quiz-screen');
     const resultScreen = document.getElementById('result-screen');
+    const howToPlayScreen = document.getElementById('how-to-play-screen');
 
-    const startBtn = document.getElementById('start-btn');
+    const easyBtn = document.getElementById('btn-easy');
+    const normalBtn = document.getElementById('btn-normal');
+    const howToPlayBtn = document.getElementById('btn-how-to-play');
+    const backToTitleBtn = document.getElementById('btn-back-to-title');
     const nextBtn = document.getElementById('next-btn');
     const restartBtn = document.getElementById('restart-btn');
 
@@ -26,29 +29,56 @@ document.addEventListener('DOMContentLoaded', () => {
     const feedbackTitle = document.getElementById('feedback-title');
     const feedbackText = document.getElementById('feedback-text');
 
-    const finalScoreDisplay = document.getElementById('final-score-display');
-    const totalQuestionsDisplay = document.getElementById('total-questions');
-    const resultMessage = document.getElementById('result-message');
+    const resultRank = document.getElementById('result-rank');
+    const resultScore = document.getElementById('result-score');
+    const resultTime = document.getElementById('result-time');
+    const returnTitleBtn = document.getElementById('btn-return-title');
 
-    // Initialize
+    const interruptBtn = document.getElementById('btn-interrupt');
+    const interruptDialog = document.getElementById('interrupt-dialog');
+    const interruptYesBtn = document.getElementById('btn-interrupt-yes');
+    const interruptNoBtn = document.getElementById('btn-interrupt-no');
+
+    const judgementOverlay = document.getElementById('judgement-overlay');
+    const judgementSymbol = document.getElementById('judgement-symbol');
+
+    // Sound Effects
+    const correctSound = new Audio('./sounds/Quiz-Ding_Dong05-1(Fast-Short).mp3');
+    const incorrectSound = new Audio('./sounds/Quiz-Buzzer05-1(Mid).mp3');
+
+    // Timer
+    let timerInterval = null;
+    let startTime = null;
+    let totalTime = 0;
+    const timerDisplay = document.getElementById('timer-display');
     init();
 
-    async function init() {
+    function init() {
+        // Event listeners for buttons
+        easyBtn.addEventListener('click', () => loadRulesAndStart('easy'));
+        normalBtn.addEventListener('click', () => loadRulesAndStart('normal'));
+        howToPlayBtn.addEventListener('click', showHowToPlay);
+        backToTitleBtn.addEventListener('click', backToTitle);
+        nextBtn.addEventListener('click', nextQuestion);
+        returnTitleBtn.addEventListener('click', resetQuiz);
+        interruptBtn.addEventListener('click', showInterruptDialog);
+        interruptYesBtn.addEventListener('click', interruptQuiz);
+        interruptNoBtn.addEventListener('click', hideInterruptDialog);
+
+        // Connect to WebSocket server for NFC interactions
+        connectWebSocket();
+    }
+
+    async function loadRulesAndStart(difficulty) {
         try {
-            const response = await fetch(`./api/rules/${currentCity}`);
+            const response = await fetch(`./api/rules/${difficulty}`);
             rules = await response.json();
             console.log('Rules loaded:', rules);
 
             // Update title based on city
             document.querySelector('.subtitle').textContent = `${rules.municipality}編`;
 
-            startBtn.addEventListener('click', startQuiz);
-            nextBtn.addEventListener('click', nextQuestion);
-            restartBtn.addEventListener('click', resetQuiz);
-
-            // Connect to WebSocket server for NFC interactions
-            connectWebSocket();
-
+            startQuiz();
         } catch (error) {
             console.error('Failed to load rules:', error);
             alert('ルールデータの読み込みに失敗しました。');
@@ -92,6 +122,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function startQuiz() {
         score = 0;
         currentQuestionIndex = 0;
+        totalTime = 0; // Reset total time
         // Shuffle and pick 5 questions
         currentQuestions = shuffleArray([...rules.items]).slice(0, 5);
 
@@ -102,9 +133,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function loadQuestion() {
         feedbackOverlay.classList.add('hidden'); // Ensure feedback is hidden
+        judgementOverlay.classList.add('hidden'); // Hide judgement overlay
         isAnswering = false;
         optionsContainer.style.pointerEvents = 'none'; // Disable clicks
         optionsContainer.style.opacity = '0.5'; // Visual feedback
+
+        // Stop previous timer if running
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+
+        // Start timer for this question
+        startTime = Date.now();
+        timerInterval = setInterval(() => {
+            const elapsedTime = (Date.now() - startTime) / 1000; // Convert to seconds
+            timerDisplay.textContent = `タイム: ${elapsedTime.toFixed(1)}秒`;
+        }, 100); // Update every 100ms
 
         console.log('Loading question, input disabled');
 
@@ -151,20 +195,46 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         isAnswering = false;
+        optionsContainer.style.pointerEvents = 'none'; // Disable further clicks
+
+        // Stop timer and calculate time for this question
+        if (timerInterval) {
+            clearInterval(timerInterval);
+        }
+        const questionTime = (Date.now() - startTime) / 1000; // Convert to seconds
+        totalTime += questionTime;
 
         const currentItem = currentQuestions[currentQuestionIndex];
         const isCorrect = selectedKey === currentItem.category;
 
+        // Show judgement symbol
         if (isCorrect) {
             score++;
             updateScoreDisplay();
-            showFeedback(true, currentItem);
+            judgementSymbol.textContent = '⭕'; // Circle
+            judgementOverlay.classList.remove('incorrect');
+            judgementOverlay.classList.add('correct');
+            // Play correct sound
+            correctSound.currentTime = 0;
+            correctSound.play();
         } else {
-            showFeedback(false, currentItem);
+            judgementSymbol.textContent = '✕'; // Cross
+            judgementOverlay.classList.remove('correct');
+            judgementOverlay.classList.add('incorrect');
+            // Play incorrect sound
+            incorrectSound.currentTime = 0;
+            incorrectSound.play();
         }
+        judgementOverlay.classList.remove('hidden');
+
+        // Wait 1.5 seconds then show feedback
+        setTimeout(() => {
+            showFeedback(isCorrect, currentItem);
+        }, 1500);
     }
 
     function showFeedback(isCorrect, item) {
+        judgementOverlay.classList.add('hidden'); // Hide judgement symbol
         feedbackOverlay.classList.remove('hidden');
 
         if (isCorrect) {
@@ -202,23 +272,51 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showResult() {
         showScreen(resultScreen);
-        finalScoreDisplay.textContent = score;
-        totalQuestionsDisplay.textContent = currentQuestions.length;
-
+        
+        // Display score
+        resultScore.textContent = `${score} / ${currentQuestions.length}`;
+        
+        // Display time (convert to fixed decimal)
+        resultTime.textContent = `${totalTime.toFixed(1)}秒`;
+        
+        // Calculate rank
         const percentage = (score / currentQuestions.length) * 100;
+        let rank = '';
         if (percentage === 100) {
-            resultMessage.textContent = '完璧です！ゴミ分別マスター！🏆';
+            rank = 'Sランク 🏆';
         } else if (percentage >= 80) {
-            resultMessage.textContent = '素晴らしい！あと少しでマスターです✨';
-        } else if (percentage >= 60) {
-            resultMessage.textContent = 'いい感じです！復習して満点を目指そう👍';
+            rank = 'Aランク 🌟';
+        } else if (percentage >= 50) {
+            rank = 'Bランク 👍';
         } else {
-            resultMessage.textContent = 'まだまだこれから！一緒に学びましょう🔰';
+            rank = 'Cランク 🔰';
         }
+        resultRank.textContent = rank;
     }
 
     function resetQuiz() {
         showScreen(startScreen);
+    }
+
+    function showHowToPlay() {
+        showScreen(howToPlayScreen);
+    }
+
+    function backToTitle() {
+        showScreen(startScreen);
+    }
+
+    function showInterruptDialog() {
+        interruptDialog.style.display = 'flex';
+    }
+
+    function hideInterruptDialog() {
+        interruptDialog.style.display = 'none';
+    }
+
+    function interruptQuiz() {
+        hideInterruptDialog();
+        resetQuiz();
     }
 
     function updateScoreDisplay() {
@@ -226,7 +324,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function showScreen(screen) {
-        [startScreen, quizScreen, resultScreen].forEach(s => {
+        [startScreen, quizScreen, resultScreen, howToPlayScreen].forEach(s => {
             s.classList.remove('active');
             s.classList.add('hidden');
         });
