@@ -5,6 +5,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentQuestionIndex = 0;
     let score = 0;
     let isAnswering = false;
+    let currentDifficulty = null; // Add difficulty tracking
 
     // DOM Elements
     const startScreen = document.getElementById('start-screen');
@@ -18,6 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const backToTitleBtn = document.getElementById('btn-back-to-title');
     const nextBtn = document.getElementById('next-btn');
     const restartBtn = document.getElementById('restart-btn');
+    const playAgainBtn = document.getElementById('btn-play-again');
 
     const questionItem = document.getElementById('question-item');
     const optionsContainer = document.getElementById('options-container');
@@ -61,6 +63,7 @@ document.addEventListener('DOMContentLoaded', () => {
         backToTitleBtn.addEventListener('click', backToTitle);
         nextBtn.addEventListener('click', nextQuestion);
         returnTitleBtn.addEventListener('click', resetQuiz);
+        playAgainBtn.addEventListener('click', playAgain);
         interruptBtn.addEventListener('click', showInterruptDialog);
         interruptYesBtn.addEventListener('click', interruptQuiz);
         interruptNoBtn.addEventListener('click', hideInterruptDialog);
@@ -71,12 +74,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     async function loadRulesAndStart(difficulty) {
         try {
+            currentDifficulty = difficulty; // Save current difficulty
             const response = await fetch(`./api/rules/${difficulty}`);
             rules = await response.json();
             console.log('Rules loaded:', rules);
 
             // Update title based on city
-            document.querySelector('.subtitle').textContent = `${rules.municipality}編`;
+            //document.querySelector('.subtitle').textContent = `${rules.municipality}編`;
 
             startQuiz();
         } catch (error) {
@@ -273,20 +277,24 @@ document.addEventListener('DOMContentLoaded', () => {
     function showResult() {
         showScreen(resultScreen);
         
-        // Display score
-        resultScore.textContent = `${score} / ${currentQuestions.length}`;
+        // Calculate score (10 points per correct answer)
+        const totalScore = score * 10;
+        const maxScore = currentQuestions.length * 10;
+        
+        // Display score: "〇点（〇問中〇問正解）"
+        resultScore.textContent = `${totalScore}点`;
         
         // Display time (convert to fixed decimal)
         resultTime.textContent = `${totalTime.toFixed(1)}秒`;
         
-        // Calculate rank
+        // Calculate rank based on percentage
         const percentage = (score / currentQuestions.length) * 100;
         let rank = '';
         if (percentage === 100) {
             rank = 'Sランク 🏆';
-        } else if (percentage >= 80) {
+        } else if (percentage >= 70) {
             rank = 'Aランク 🌟';
-        } else if (percentage >= 50) {
+        } else if (percentage >= 40) {
             rank = 'Bランク 👍';
         } else {
             rank = 'Cランク 🔰';
@@ -296,6 +304,27 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function resetQuiz() {
         showScreen(startScreen);
+    }
+
+    function playAgain() {
+        // Reset score and timer
+        score = 0;
+        totalTime = 0;
+        currentQuestionIndex = 0;
+        
+        // Clear timer if running
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        
+        // Restart with the same difficulty
+        if (currentDifficulty) {
+            loadRulesAndStart(currentDifficulty);
+        } else {
+            // Fallback to title screen if no difficulty was saved
+            showScreen(startScreen);
+        }
     }
 
     function showHowToPlay() {
