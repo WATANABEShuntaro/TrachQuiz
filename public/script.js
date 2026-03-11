@@ -46,6 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const charactersContainer = document.querySelector('.characters-container');
     const judgmentMark = document.getElementById('judgment-mark');
     const explanationBox = document.getElementById('explanation-box');
+    const smallJudgmentMark = document.getElementById('small-judgment-mark');
 
     // Sound Effects
     const correctSound = new Audio('./sounds/Quiz-Ding_Dong05-1(Fast-Short).mp3');
@@ -104,10 +105,10 @@ document.addEventListener('DOMContentLoaded', () => {
         
         if (nextBtn) nextBtn.addEventListener('click', nextQuestion);
         
-        // Next Question button on red explanation box
-        const nextQuestionBtn = document.getElementById('btn-next-question');
-        if (nextQuestionBtn) {
-            nextQuestionBtn.addEventListener('click', handleNextQuestion);
+        // Space key button on red explanation box
+        const spaceKeyBtn = document.getElementById('btn-space-key');
+        if (spaceKeyBtn) {
+            spaceKeyBtn.addEventListener('click', handleNextQuestion);
         }
         
         // Back to Home button on result screen
@@ -122,9 +123,17 @@ document.addEventListener('DOMContentLoaded', () => {
         if (interruptYesBtn) interruptYesBtn.addEventListener('click', interruptQuiz);
         if (interruptNoBtn) interruptNoBtn.addEventListener('click', hideInterruptDialog);
 
-        // Keyboard input for NFC/Direct input (1, 2, 3, 4 keys)
+        // Keyboard input for NFC/Direct input (1, 2, 3, 4 keys) and Space key
         document.addEventListener('keydown', (event) => {
-            // Only accept input during quiz screen and when answering
+            // Space key: advance to next question when explanation is displayed
+            if (event.code === 'Space' && !document.getElementById('explanation-red-box').classList.contains('hidden')) {
+                event.preventDefault();
+                console.log('Space key pressed during explanation');
+                handleNextQuestion();
+                return;
+            }
+
+            // Only accept numeric input during quiz screen and when answering
             if (!quizScreen.classList.contains('active') || !isAnswering) {
                 return;
             }
@@ -143,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadRulesAndStart(difficulty) {
         try {
             currentDifficulty = difficulty; // Save current difficulty
-            const response = await fetch(`./api/rules/${difficulty}`);
+            const response = await fetch(`./rules/${difficulty}.json`);
             rules = await response.json();
             console.log('Rules loaded:', rules);
 
@@ -196,7 +205,7 @@ document.addEventListener('DOMContentLoaded', () => {
         currentQuestionIndex = 0;
         totalTime = 0; // Reset total time
         // Shuffle and pick 5 questions
-        currentQuestions = shuffleArray([...rules.items]).slice(0, 5);
+        currentQuestions = shuffleArray([...rules]).slice(0, 5);
 
         updateScoreDisplay();
         activateScreen('quiz-screen');
@@ -209,10 +218,20 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('explanation-red-box').classList.add('hidden'); // Hide explanation box
         document.getElementById('explanation-red-box').classList.add('fade-out'); // Ensure fade-out is applied
         
-        // Reset fade-out classes for characters, timer, and button
+        // Reset blue box to center (remove moved-up animation)
+        document.getElementById('question-box').classList.remove('moved-up');
+        
+        // Show score display for new question
+        document.getElementById('score-display').style.display = 'block';
+        
+        // Reset small judgment mark
+        smallJudgmentMark.classList.add('hidden'); // Hide small mark
+        smallJudgmentMark.textContent = ''; // Clear text
+        smallJudgmentMark.classList.remove('mark-maru', 'mark-batsu'); // Remove mark classes
+        
+        // Reset fade-out classes for characters and timer
         charactersContainer.classList.remove('fade-out'); // Show characters for new question
         document.getElementById('timer-display').classList.remove('fade-out'); // Show timer
-        document.querySelector('.interrupt-btn-bottom').classList.remove('fade-out'); // Show button
         judgmentMark.classList.remove('fade-out'); // Reset judgment mark
         
         isAnswering = false;
@@ -224,10 +243,12 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Start timer for this question
         startTime = Date.now();
+        // Immediately display initial timer value before first setInterval tick
+        timerDisplay.textContent = 'じかん: 0';
         timerInterval = setInterval(() => {
-            const elapsedTime = (Date.now() - startTime) / 1000; // Convert to seconds
-            timerDisplay.textContent = elapsedTime.toFixed(1);
-        }, 100); // Update every 100ms
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // Convert to seconds
+            timerDisplay.textContent = 'じかん: ' + elapsedTime;
+        }, 1000); // Update every 1000ms (1 second)
 
         console.log('Loading question, input disabled');
 
@@ -239,18 +260,15 @@ document.addEventListener('DOMContentLoaded', () => {
         const item = currentQuestions[currentQuestionIndex];
 
         // Update UI
-        trashName.textContent = item.name;
-        trashDetail.textContent = item.detail || rules.categories[item.category] || '';
+        trashName.textContent = item.title;
+        trashDetail.textContent = item.question;
         currentQuestionNum.textContent = currentQuestionIndex + 1;
         totalQuestionsNum.textContent = currentQuestions.length;
 
-        // Generate answer options (for keyboard/NFC input)
-        const correctCategoryKey = item.category;
-        const incorrectKeys = Object.keys(rules.categories).filter(k => k !== correctCategoryKey);
-        const randomIncorrect = shuffleArray(incorrectKeys).slice(0, 3);
-        optionKeys = shuffleArray([correctCategoryKey, ...randomIncorrect]);
+        // Generate answer options (for keyboard/NFC input) - for now use simple key-based approach
+        optionKeys = ['a', 'b', 'c', 'd'];
         
-        console.log('Answer options:', optionKeys.map(k => rules.categories[k]));
+        console.log('Current question:', item.title, 'Answer:', item.answer);
     }
 
     function handleAnswer(selectedKey) {
@@ -268,7 +286,8 @@ document.addEventListener('DOMContentLoaded', () => {
         totalTime += questionTime;
 
         const currentItem = currentQuestions[currentQuestionIndex];
-        const isCorrect = selectedKey === currentItem.category;
+        // For now, only the first option key is treated as correct
+        const isCorrect = selectedKey === optionKeys[0];
 
         // Show judgement mark
         if (isCorrect) {
@@ -286,24 +305,39 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         effectsContainer.classList.remove('hidden');
 
-        // STEP 2 (約1000ミリ秒後): キャラクター、タイマー、おわるボタンに .fade-out を付与
+        // STEP 2 (約1000ミリ秒後): キャラクター、タイマーに .fade-out を付与（おわるボタンは表示維持）
         setTimeout(() => {
             charactersContainer.classList.add('fade-out');
             document.getElementById('timer-display').classList.add('fade-out');
-            document.querySelector('.interrupt-btn-bottom').classList.add('fade-out');
             
-            // STEP 3 (約1500ミリ秒後): 赤い解説ブロックを表示
+            // STEP 3 (約1500ミリ秒後): 赤い解説ブロックと小さな判定マークを表示
             setTimeout(() => {
-                const categoryName_label = isCorrect ? rules.categories[currentItem.category] : '不正解';
+                const categoryName_label = isCorrect ? currentItem.answer : '不正解';
                 const explanationContent = `
-                    正解は「<strong>${rules.categories[currentItem.category]}</strong>」です。<br><br>
-                    ${currentItem.description}<br><br>
-                    <span style="font-size:0.9em; color:#fff;">💡 ${currentItem.tips}</span><br><br>
-                    <strong>📚 豆知識:</strong> ${currentItem.trivia}
+                    正解は「<strong>${currentItem.answer}</strong>」です。<br><br>
+                    ${currentItem.explanation}<br><br>
                 `;
                 document.getElementById('explanation-text').innerHTML = explanationContent;
+                
+                // Slide blue box up and display red explanation box
+                document.getElementById('question-box').classList.add('moved-up');
                 document.getElementById('explanation-red-box').classList.remove('hidden');
                 document.getElementById('explanation-red-box').classList.remove('fade-out');
+                
+                // Hide score display during explanation
+                document.getElementById('score-display').style.display = 'none';
+                
+                // Display small judgment mark on bottom left (using text instead of image)
+                if (isCorrect) {
+                    smallJudgmentMark.textContent = '〇';
+                    smallJudgmentMark.classList.remove('mark-batsu');
+                    smallJudgmentMark.classList.add('mark-maru');
+                } else {
+                    smallJudgmentMark.textContent = '×';
+                    smallJudgmentMark.classList.remove('mark-maru');
+                    smallJudgmentMark.classList.add('mark-batsu');
+                }
+                smallJudgmentMark.classList.remove('hidden');
                 
                 // STEP 4 (約2000ミリ秒後): 〇×マークを消す
                 setTimeout(() => {
@@ -329,14 +363,12 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackTitle.className = 'incorrect';
         }
 
-        const categoryName_label = rules.categories[item.category];
+        const categoryName_label = item.answer;
         
         // Display brief message in feedback overlay
         feedbackText.innerHTML = `
             正解は「<strong>${categoryName_label}</strong>」です。<br><br>
-            ${item.description}<br><br>
-            <span style="font-size:0.9em; color:#666;">💡 ${item.tips}</span><br><br>
-            <strong>📚 豆知識:</strong> ${item.trivia}
+            ${item.explanation}<br><br>
         `;
     }
 
@@ -355,10 +387,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Hide red explanation box with fade-out
         document.getElementById('explanation-red-box').classList.add('fade-out');
         
-        // Show characters, timer, and interrupt button by removing fade-out class
+        // Hide small judgment mark
+        smallJudgmentMark.classList.add('hidden');
+        
+        // Show characters, timer by removing fade-out class
         charactersContainer.classList.remove('fade-out');
         document.getElementById('timer-display').classList.remove('fade-out');
-        document.querySelector('.interrupt-btn-bottom').classList.remove('fade-out');
         
         // Move to next question
         currentQuestionIndex++;
@@ -380,8 +414,12 @@ document.addEventListener('DOMContentLoaded', () => {
         // Display score
         document.getElementById('final-score-value').textContent = totalScore;
         
-        // Display time (convert to fixed decimal)
-        document.getElementById('final-time-value').textContent = `${totalTime.toFixed(1)}`;
+        // Display time in "ふん" and "びょう" format (divide totalTime into minutes and seconds)
+        const totalSeconds = Math.round(totalTime);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        const timeText = minutes > 0 ? minutes + 'ふん' + seconds + 'びょう' : seconds + 'びょう';
+        document.getElementById('final-time-value').textContent = timeText;
         
         // Calculate rank based on percentage
         const percentage = (score / currentQuestions.length) * 100;

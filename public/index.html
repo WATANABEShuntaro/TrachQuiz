@@ -63,7 +63,7 @@
                 <!-- 解説枠（赤） -->
                 <div id="explanation-red-box" class="css-red-box hidden">
                     <p id="explanation-text">解説テキストがここに入ります。</p>
-                    <img id="btn-next-question" src="images/btn-next.png" alt="つぎへ" class="btn-next-question">
+                    <img id="btn-space-key" src="images/btn-space.png" alt="スペースキーを押してね" class="btn-space-key">
                 </div>
             </div>
 
@@ -81,6 +81,7 @@
             <!-- レイヤー4：最前面UI層（z-index: 300） -->
             <div class="layer-front-ui">
                 <div id="timer-display" class="timer-bottom">0.0</div>
+                <div id="small-judgment-mark" class="small-judgment-mark hidden"></div>
                 <img id="btn-interrupt-img" src="images/botan.png" class="interrupt-btn-bottom" alt="おわる">
             </div>
 
@@ -108,16 +109,16 @@
             <!-- レイヤー2：UI・枠層 -->
             <div class="result-layer-ui">
                 <!-- タイトル -->
-                <h1 id="result-title">結果発表</h1>
+                <h1 id="result-title">けっかはっぴょう</h1>
                 
                 <!-- スコア枠 -->
                 <div id="score-box" class="css-info-box">
-                    <div id="final-score-text">スコア: <span id="final-score-value">00</span>点</div>
+                    <div id="final-score-text">スコア: <span id="final-score-value">00</span>てん</div>
                 </div>
                 
                 <!-- 時間枠 -->
                 <div id="time-box" class="css-info-box">
-                    <div id="final-time-text">時間: <span id="final-time-value">000</span>秒</div>
+                    <div id="final-time-text">じかん: <span id="final-time-value">000</span></div>
                 </div>
                 
                 <!-- ランク表示 -->
@@ -132,7 +133,7 @@
     <!-- Interrupt Dialog -->
     <div id="interrupt-dialog" class="interrupt-dialog" style="display: none;">
         <div class="interrupt-dialog-content">
-            <p>ゲームを中断しますか？</p>
+            <p>ゲームをやめますか？</p>
             <div class="interrupt-dialog-buttons">
                 <button id="btn-interrupt-yes" class="primary-btn">はい</button>
                 <button id="btn-interrupt-no" class="secondary-btn">いいえ</button>
