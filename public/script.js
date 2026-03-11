@@ -52,6 +52,47 @@ document.addEventListener('DOMContentLoaded', () => {
     const correctSound = new Audio('./sounds/Quiz-Ding_Dong05-1(Fast-Short).mp3');
     const incorrectSound = new Audio('./sounds/Quiz-Buzzer05-1(Mid).mp3');
 
+    // BGM Audio Objects
+    const bgmHome = new Audio('./sounds/home.mp3');
+    const bgmPlay = new Audio('./sounds/play.mp3');
+    const bgmResult = new Audio('./sounds/result.mp3');
+    
+    // Set all BGMs to loop
+    bgmHome.loop = true;
+    bgmPlay.loop = true;
+    bgmResult.loop = true;
+    
+    // BGM Control Function
+    function switchBGM(targetBgm) {
+        // Stop all BGMs
+        bgmHome.pause();
+        bgmPlay.pause();
+        bgmResult.pause();
+        bgmHome.currentTime = 0;
+        bgmPlay.currentTime = 0;
+        bgmResult.currentTime = 0;
+        
+        // Play target BGM
+        if (targetBgm) {
+            targetBgm.currentTime = 0;
+            targetBgm.play().catch(err => {
+                console.log('BGM playback failed (might be blocked by browser autoplay policy):', err);
+            });
+        }
+    }
+    
+    // Autoplay Policy Response: Initialize BGM on first user interaction
+    let bgmInitialized = false;
+    document.body.addEventListener('click', () => {
+        if (!bgmInitialized) {
+            bgmInitialized = true;
+            // Start home BGM if on start screen
+            if (startScreen.classList.contains('active-screen')) {
+                switchBGM(bgmHome);
+            }
+        }
+    }, { once: true });
+
     // Timer
     let timerInterval = null;
     let startTime = null;
@@ -115,6 +156,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (backToHomeBtn) {
             backToHomeBtn.addEventListener('click', () => {
                 console.log('Back to home button clicked');
+                switchBGM(bgmHome);
                 activateScreen('start-screen');
             });
         }
@@ -159,6 +201,9 @@ document.addEventListener('DOMContentLoaded', () => {
             // Update title based on city
             //document.querySelector('.subtitle').textContent = `${rules.municipality}編`;
 
+            // Switch to play BGM
+            switchBGM(bgmPlay);
+            
             startQuiz();
         } catch (error) {
             console.error('Failed to load rules:', error);
@@ -406,6 +451,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function showResult() {
         activateScreen('result-screen');
+        switchBGM(bgmResult);
         
         // Calculate score (10 points per correct answer)
         const totalScore = score * 10;
@@ -455,6 +501,7 @@ document.addEventListener('DOMContentLoaded', () => {
         optionKeys = [];
         
         // Go to title screen
+        switchBGM(bgmHome);
         activateScreen('start-screen');
     }
 
@@ -485,6 +532,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function backToTitle() {
         timerInterval && clearInterval(timerInterval);
+        switchBGM(bgmHome);
         activateScreen('start-screen');
     }
 
