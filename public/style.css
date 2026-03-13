@@ -543,7 +543,7 @@ body {
 
 #how-to-play-screen {
     display: none;
-    position: fixed !important;
+    position: relative !important;
     top: 0 !important;
     left: 0 !important;
     width: 100vw !important;
@@ -553,7 +553,7 @@ body {
     background-size: 100% 100% !important;
     background-position: center !important;
     background-repeat: no-repeat;
-    overflow: hidden;
+    overflow-y: auto;
     padding: 0;
     margin: 0;
     flex-direction: column;
@@ -563,6 +563,37 @@ body {
 
 #how-to-play-screen.active-screen {
     display: block !important;
+}
+
+/* How to Play Content - Center image display */
+.how-to-play-content {
+    position: relative;
+    z-index: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100% !important;
+    height: auto;
+    flex: 1;
+    padding: 20px 10px;
+    text-align: center !important;
+}
+
+/* How to Play Main Image - Large centered display */
+#how-to-main-image {
+    display: block !important;
+    margin-left: auto !important;
+    margin-right: auto !important;
+    margin-top: 40px !important;
+    margin-bottom: 40px !important;
+    width: auto !important;
+    max-width: 90% !important;
+    max-height: calc(100vh - 150px) !important;
+    height: auto !important;
+    border-radius: 15px;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+    object-fit: contain !important;
+    align-self: center !important;
 }
 
 /* Button Container - Grid Layout for Inverted Triangle */
@@ -668,7 +699,10 @@ body {
 
 /* Back to Title Button - Ensure it's clickable */
 #btn-back-to-title {
-    position: relative !important;
+    position: absolute !important;
+    bottom: 5% !important;
+    left: 5% !important;
+    margin: 0 !important;
     z-index: 9999 !important;
     pointer-events: auto !important;
     cursor: pointer !important;

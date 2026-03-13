@@ -140,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (backToTitleBtn) {
             backToTitleBtn.addEventListener('click', () => {
                 console.log('Back to title button clicked');
+                switchBGM(bgmHome);
                 activateScreen('start-screen');
             });
         }
@@ -564,6 +565,9 @@ document.addEventListener('DOMContentLoaded', () => {
         // Clear question data
         currentQuestions = [];
         optionKeys = [];
+        
+        // Switch to home BGM
+        switchBGM(bgmHome);
         
         // Go to title screen
         activateScreen('start-screen');
