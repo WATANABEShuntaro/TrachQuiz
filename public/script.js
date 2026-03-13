@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let score = 0;
     let isAnswering = false;
     let currentDifficulty = null; // Add difficulty tracking
+    let optionKeys = []; // NFC/Keyboard answer options
 
     // DOM Elements
     const startScreen = document.getElementById('start-screen');
@@ -13,60 +14,179 @@ document.addEventListener('DOMContentLoaded', () => {
     const resultScreen = document.getElementById('result-screen');
     const howToPlayScreen = document.getElementById('how-to-play-screen');
 
-    const easyBtn = document.getElementById('btn-easy');
-    const normalBtn = document.getElementById('btn-normal');
-    const howToPlayBtn = document.getElementById('btn-how-to-play');
+    const kantanBtn = document.getElementById('btn-kantan');
+    const muriBtn = document.getElementById('btn-muri');
+    const howtoBtn = document.getElementById('btn-howto');
     const backToTitleBtn = document.getElementById('btn-back-to-title');
     const nextBtn = document.getElementById('next-btn');
     const restartBtn = document.getElementById('restart-btn');
-    const playAgainBtn = document.getElementById('btn-play-again');
 
-    const questionItem = document.getElementById('question-item');
-    const optionsContainer = document.getElementById('options-container');
-    const progressText = document.getElementById('progress-text');
-    const currentScoreDisplay = document.getElementById('current-score');
+    const trashName = document.getElementById('trash-name');
+    const trashDetail = document.getElementById('trash-detail');
+    const currentQuestionNum = document.getElementById('current-question-num');
+    const totalQuestionsNum = document.getElementById('total-questions-num');
+    const scoreDisplay = document.getElementById('score-display');
 
     const feedbackOverlay = document.getElementById('feedback-overlay');
     const feedbackIcon = document.getElementById('feedback-icon');
     const feedbackTitle = document.getElementById('feedback-title');
     const feedbackText = document.getElementById('feedback-text');
 
-    const resultRank = document.getElementById('result-rank');
-    const resultScore = document.getElementById('result-score');
-    const resultTime = document.getElementById('result-time');
-    const returnTitleBtn = document.getElementById('btn-return-title');
+    const finalScoreText = document.getElementById('final-score-text');
+    const finalTimeText = document.getElementById('final-time-text');
+    const finalRankText = document.getElementById('final-rank-text');
+    const backToHomeBtn = document.getElementById('btn-back-to-home');
 
-    const interruptBtn = document.getElementById('btn-interrupt');
+    const interruptBtn = document.getElementById('btn-interrupt-img');
     const interruptDialog = document.getElementById('interrupt-dialog');
     const interruptYesBtn = document.getElementById('btn-interrupt-yes');
     const interruptNoBtn = document.getElementById('btn-interrupt-no');
 
-    const judgementOverlay = document.getElementById('judgement-overlay');
-    const judgementSymbol = document.getElementById('judgement-symbol');
+    const effectsContainer = document.querySelector('.effects-container');
+    const charactersContainer = document.querySelector('.characters-container');
+    const judgmentMark = document.getElementById('judgment-mark');
+    const explanationBox = document.getElementById('explanation-box');
+    const smallJudgmentMark = document.getElementById('small-judgment-mark');
 
     // Sound Effects
     const correctSound = new Audio('./sounds/Quiz-Ding_Dong05-1(Fast-Short).mp3');
     const incorrectSound = new Audio('./sounds/Quiz-Buzzer05-1(Mid).mp3');
+
+    // BGM Audio Objects
+    const bgmHome = new Audio('./sounds/home.mp3');
+    const bgmPlay = new Audio('./sounds/play.mp3');
+    const bgmResult = new Audio('./sounds/result.mp3');
+    
+    // Set all BGMs to loop
+    bgmHome.loop = true;
+    bgmPlay.loop = true;
+    bgmResult.loop = true;
+    
+    // BGM Control Function
+    function switchBGM(targetBgm) {
+        // Stop all BGMs
+        bgmHome.pause();
+        bgmPlay.pause();
+        bgmResult.pause();
+        bgmHome.currentTime = 0;
+        bgmPlay.currentTime = 0;
+        bgmResult.currentTime = 0;
+        
+        // Play target BGM
+        if (targetBgm) {
+            targetBgm.currentTime = 0;
+            targetBgm.play().catch(err => {
+                console.log('BGM playback failed (might be blocked by browser autoplay policy):', err);
+            });
+        }
+    }
+    
+    // Autoplay Policy Response: Initialize BGM on first user interaction
+    let bgmInitialized = false;
+    document.body.addEventListener('click', () => {
+        if (!bgmInitialized) {
+            bgmInitialized = true;
+            // Start home BGM if on start screen
+            if (startScreen.classList.contains('active-screen')) {
+                switchBGM(bgmHome);
+            }
+        }
+    }, { once: true });
 
     // Timer
     let timerInterval = null;
     let startTime = null;
     let totalTime = 0;
     const timerDisplay = document.getElementById('timer-display');
+    
+    // Screen switching function using class-based approach
+    function activateScreen(screenId) {
+        // Remove .active-screen from all screens
+        [startScreen, quizScreen, resultScreen, howToPlayScreen].forEach(s => {
+            s.classList.remove('active-screen');
+        });
+        
+        // Add .active-screen to target screen
+        const targetScreen = document.getElementById(screenId);
+        if (targetScreen) {
+            targetScreen.classList.add('active-screen');
+            console.log(`Activated screen: ${screenId}`);
+        } else {
+            console.error(`Screen not found: ${screenId}`);
+        }
+    }
+    
+    // Initialize - set start screen as active
+    startScreen.classList.add('active-screen');
+    
     init();
 
     function init() {
-        // Event listeners for buttons
-        easyBtn.addEventListener('click', () => loadRulesAndStart('easy'));
-        normalBtn.addEventListener('click', () => loadRulesAndStart('normal'));
-        howToPlayBtn.addEventListener('click', showHowToPlay);
-        backToTitleBtn.addEventListener('click', backToTitle);
-        nextBtn.addEventListener('click', nextQuestion);
-        returnTitleBtn.addEventListener('click', resetQuiz);
-        playAgainBtn.addEventListener('click', playAgain);
-        interruptBtn.addEventListener('click', showInterruptDialog);
-        interruptYesBtn.addEventListener('click', interruptQuiz);
-        interruptNoBtn.addEventListener('click', hideInterruptDialog);
+        // Event listeners for buttons - Title buttons
+        if (kantanBtn) kantanBtn.addEventListener('click', () => {
+            console.log('Kantan button clicked');
+            loadRulesAndStart('easy');
+        });
+        if (muriBtn) muriBtn.addEventListener('click', () => {
+            console.log('Muri button clicked');
+            loadRulesAndStart('normal');
+        });
+        if (howtoBtn) howtoBtn.addEventListener('click', () => {
+            console.log('Howto button clicked');
+            activateScreen('how-to-play-screen');
+        });
+        
+        // Back to Title button from How-to-Play screen
+        if (backToTitleBtn) {
+            backToTitleBtn.addEventListener('click', () => {
+                console.log('Back to title button clicked');
+                switchBGM(bgmHome);
+                activateScreen('start-screen');
+            });
+        }
+        
+        if (nextBtn) nextBtn.addEventListener('click', nextQuestion);
+        
+        // Space key button on red explanation box
+        const spaceKeyBtn = document.getElementById('btn-space-key');
+        if (spaceKeyBtn) {
+            spaceKeyBtn.addEventListener('click', handleNextQuestion);
+        }
+        
+        // Back to Home button on result screen
+        if (backToHomeBtn) {
+            backToHomeBtn.addEventListener('click', () => {
+                console.log('Back to home button clicked');
+                switchBGM(bgmHome);
+                activateScreen('start-screen');
+            });
+        }
+        
+        if (interruptBtn) interruptBtn.addEventListener('click', showInterruptDialog);
+        if (interruptYesBtn) interruptYesBtn.addEventListener('click', interruptQuiz);
+        if (interruptNoBtn) interruptNoBtn.addEventListener('click', hideInterruptDialog);
+
+        // Keyboard input for NFC/Direct input (1, 2, 3, 4 keys) and Space key
+        document.addEventListener('keydown', (event) => {
+            // Space key: advance to next question when explanation is displayed
+            if (event.code === 'Space' && !document.getElementById('explanation-red-box').classList.contains('hidden')) {
+                event.preventDefault();
+                console.log('Space key pressed during explanation');
+                handleNextQuestion();
+                return;
+            }
+
+            // Only accept numeric input during quiz screen and when answering
+            if (!quizScreen.classList.contains('active') || !isAnswering) {
+                return;
+            }
+            
+            const keyNum = parseInt(event.key);
+            if (keyNum >= 1 && keyNum <= 4 && keyNum <= optionKeys.length) {
+                const selectedKey = optionKeys[keyNum - 1];
+                handleAnswer(selectedKey);
+            }
+        });
 
         // Connect to WebSocket server for NFC interactions
         connectWebSocket();
@@ -75,13 +195,16 @@ document.addEventListener('DOMContentLoaded', () => {
     async function loadRulesAndStart(difficulty) {
         try {
             currentDifficulty = difficulty; // Save current difficulty
-            const response = await fetch(`./api/rules/${difficulty}`);
+            const response = await fetch(`./rules/${difficulty}.json`);
             rules = await response.json();
             console.log('Rules loaded:', rules);
 
             // Update title based on city
             //document.querySelector('.subtitle').textContent = `${rules.municipality}編`;
 
+            // Switch to play BGM
+            switchBGM(bgmPlay);
+            
             startQuiz();
         } catch (error) {
             console.error('Failed to load rules:', error);
@@ -128,19 +251,36 @@ document.addEventListener('DOMContentLoaded', () => {
         currentQuestionIndex = 0;
         totalTime = 0; // Reset total time
         // Shuffle and pick 5 questions
-        currentQuestions = shuffleArray([...rules.items]).slice(0, 5);
+        currentQuestions = shuffleArray([...rules]).slice(0, 5);
 
         updateScoreDisplay();
-        showScreen(quizScreen);
+        activateScreen('quiz-screen');
         loadQuestion();
     }
 
     function loadQuestion() {
         feedbackOverlay.classList.add('hidden'); // Ensure feedback is hidden
-        judgementOverlay.classList.add('hidden'); // Hide judgement overlay
+        effectsContainer.classList.add('hidden'); // Hide effects container
+        document.getElementById('explanation-red-box').classList.add('hidden'); // Hide explanation box
+        document.getElementById('explanation-red-box').classList.add('fade-out'); // Ensure fade-out is applied
+        
+        // Reset blue box to center (remove moved-up animation)
+        document.getElementById('question-box').classList.remove('moved-up');
+        
+        // Show score display for new question
+        document.getElementById('score-display').style.display = 'block';
+        
+        // Reset small judgment mark
+        smallJudgmentMark.classList.add('hidden'); // Hide small mark
+        smallJudgmentMark.textContent = ''; // Clear text
+        smallJudgmentMark.classList.remove('mark-maru', 'mark-batsu'); // Remove mark classes
+        
+        // Reset fade-out classes for characters and timer
+        charactersContainer.classList.remove('fade-out'); // Show characters for new question
+        document.getElementById('timer-display').classList.remove('fade-out'); // Show timer
+        judgmentMark.classList.remove('fade-out'); // Reset judgment mark
+        
         isAnswering = false;
-        optionsContainer.style.pointerEvents = 'none'; // Disable clicks
-        optionsContainer.style.opacity = '0.5'; // Visual feedback
 
         // Stop previous timer if running
         if (timerInterval) {
@@ -149,48 +289,32 @@ document.addEventListener('DOMContentLoaded', () => {
 
         // Start timer for this question
         startTime = Date.now();
+        // Immediately display initial timer value before first setInterval tick
+        timerDisplay.textContent = 'じかん: 0';
         timerInterval = setInterval(() => {
-            const elapsedTime = (Date.now() - startTime) / 1000; // Convert to seconds
-            timerDisplay.textContent = `タイム: ${elapsedTime.toFixed(1)}秒`;
-        }, 100); // Update every 100ms
+            const elapsedTime = Math.floor((Date.now() - startTime) / 1000); // Convert to seconds
+            timerDisplay.textContent = 'じかん: ' + elapsedTime;
+        }, 1000); // Update every 1000ms (1 second)
 
         console.log('Loading question, input disabled');
 
         // Prevent accidental double-clicks or ghost clicks during transition
         setTimeout(() => {
             isAnswering = true;
-            optionsContainer.style.pointerEvents = 'auto';
-            optionsContainer.style.opacity = '1';
             console.log('Input enabled');
         }, 500);
         const item = currentQuestions[currentQuestionIndex];
 
         // Update UI
-        questionItem.textContent = item.name;
-        progressText.textContent = `Q${currentQuestionIndex + 1} / ${currentQuestions.length}`;
+        trashName.textContent = item.title;
+        trashDetail.textContent = item.question;
+        currentQuestionNum.textContent = currentQuestionIndex + 1;
+        totalQuestionsNum.textContent = currentQuestions.length;
 
-        // Generate Options
-        optionsContainer.innerHTML = '';
-        const categories = Object.entries(rules.categories);
-
-        // We want to show the correct category + 3 random others (or all if few)
-        // For simplicity, let's show all 6 categories or a subset?
-        // Aizu has 6 categories. 6 buttons might be too many for mobile grid (3 rows).
-        // Let's try showing 4 options: Correct + 3 Random Incorrect
-
-        const correctCategoryKey = item.category;
-        const incorrectKeys = Object.keys(rules.categories).filter(k => k !== correctCategoryKey);
-        const randomIncorrect = shuffleArray(incorrectKeys).slice(0, 3);
-        const optionKeys = shuffleArray([correctCategoryKey, ...randomIncorrect]);
-
-        optionKeys.forEach(key => {
-            const btn = document.createElement('button');
-            btn.className = 'option-btn';
-            btn.textContent = rules.categories[key];
-            btn.dataset.key = key;
-            btn.addEventListener('click', () => handleAnswer(key));
-            optionsContainer.appendChild(btn);
-        });
+        // Generate answer options (for keyboard/NFC input) - for now use simple key-based approach
+        optionKeys = ['a', 'b', 'c', 'd'];
+        
+        console.log('Current question:', item.title, 'Answer:', item.answer);
     }
 
     function handleAnswer(selectedKey) {
@@ -199,7 +323,6 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
         isAnswering = false;
-        optionsContainer.style.pointerEvents = 'none'; // Disable further clicks
 
         // Stop timer and calculate time for this question
         if (timerInterval) {
@@ -209,36 +332,71 @@ document.addEventListener('DOMContentLoaded', () => {
         totalTime += questionTime;
 
         const currentItem = currentQuestions[currentQuestionIndex];
-        const isCorrect = selectedKey === currentItem.category;
+        // For now, only the first option key is treated as correct
+        const isCorrect = selectedKey === optionKeys[0];
 
-        // Show judgement symbol
+        // Show judgement mark
         if (isCorrect) {
             score++;
             updateScoreDisplay();
-            judgementSymbol.textContent = '⭕'; // Circle
-            judgementOverlay.classList.remove('incorrect');
-            judgementOverlay.classList.add('correct');
+            judgmentMark.innerHTML = '<div class="mark-correct"></div>';
             // Play correct sound
             correctSound.currentTime = 0;
             correctSound.play();
         } else {
-            judgementSymbol.textContent = '✕'; // Cross
-            judgementOverlay.classList.remove('correct');
-            judgementOverlay.classList.add('incorrect');
+            judgmentMark.innerHTML = '<div class="mark-incorrect">✕</div>';
             // Play incorrect sound
             incorrectSound.currentTime = 0;
             incorrectSound.play();
         }
-        judgementOverlay.classList.remove('hidden');
+        effectsContainer.classList.remove('hidden');
 
-        // Wait 1.5 seconds then show feedback
+        // STEP 2 (約1000ミリ秒後): キャラクター、タイマーに .fade-out を付与（おわるボタンは表示維持）
         setTimeout(() => {
-            showFeedback(isCorrect, currentItem);
-        }, 1500);
+            charactersContainer.classList.add('fade-out');
+            document.getElementById('timer-display').classList.add('fade-out');
+            
+            // STEP 3 (約1500ミリ秒後): 赤い解説ブロックと小さな判定マークを表示
+            setTimeout(() => {
+                const categoryName_label = isCorrect ? currentItem.answer : '不正解';
+                const explanationContent = `
+                    正解は「<strong>${currentItem.answer}</strong>」です。<br><br>
+                    ${currentItem.explanation}<br><br>
+                `;
+                document.getElementById('explanation-text').innerHTML = explanationContent;
+                
+                // Slide blue box up and display red explanation box
+                document.getElementById('question-box').classList.add('moved-up');
+                document.getElementById('explanation-red-box').classList.remove('hidden');
+                document.getElementById('explanation-red-box').classList.remove('fade-out');
+                
+                // Hide score display during explanation
+                document.getElementById('score-display').style.display = 'none';
+                
+                // Display small judgment mark on bottom left (using text instead of image)
+                if (isCorrect) {
+                    smallJudgmentMark.textContent = '〇';
+                    smallJudgmentMark.classList.remove('mark-batsu');
+                    smallJudgmentMark.classList.add('mark-maru');
+                } else {
+                    smallJudgmentMark.textContent = '×';
+                    smallJudgmentMark.classList.remove('mark-maru');
+                    smallJudgmentMark.classList.add('mark-batsu');
+                }
+                smallJudgmentMark.classList.remove('hidden');
+                
+                // STEP 4 (約2000ミリ秒後): 〇×マークを消す
+                setTimeout(() => {
+                    judgmentMark.classList.add('fade-out');
+                }, 500);
+            }, 500);
+        }, 1000);
     }
 
     function showFeedback(isCorrect, item) {
-        judgementOverlay.classList.add('hidden'); // Hide judgement symbol
+        effectsContainer.classList.add('hidden'); // Hide effects
+        charactersContainer.classList.add('hidden'); // Hide characters when showing feedback
+        document.querySelector('.layer-front-ui').classList.add('hidden'); // Hide timer and button
         feedbackOverlay.classList.remove('hidden');
 
         if (isCorrect) {
@@ -251,15 +409,12 @@ document.addEventListener('DOMContentLoaded', () => {
             feedbackTitle.className = 'incorrect';
         }
 
-        const categoryName = rules.categories[item.category];
+        const categoryName_label = item.answer;
+        
+        // Display brief message in feedback overlay
         feedbackText.innerHTML = `
-            正解は「<strong>${categoryName}</strong>」です。<br><br>
-            ${item.description}<br>
-            <span style="font-size:0.9em; color:#777;">💡 ${item.tips}</span>
-            <div class="trivia-box">
-                <span class="trivia-icon">🎓</span>
-                <p class="trivia-text">${item.trivia}</p>
-            </div>
+            正解は「<strong>${categoryName_label}</strong>」です。<br><br>
+            ${item.explanation}<br><br>
         `;
     }
 
@@ -273,19 +428,45 @@ document.addEventListener('DOMContentLoaded', () => {
             showResult();
         }
     }
+    
+    function handleNextQuestion() {
+        // Hide red explanation box with fade-out
+        document.getElementById('explanation-red-box').classList.add('fade-out');
+        
+        // Hide small judgment mark
+        smallJudgmentMark.classList.add('hidden');
+        
+        // Show characters, timer by removing fade-out class
+        charactersContainer.classList.remove('fade-out');
+        document.getElementById('timer-display').classList.remove('fade-out');
+        
+        // Move to next question
+        currentQuestionIndex++;
+        
+        if (currentQuestionIndex < currentQuestions.length) {
+            loadQuestion();
+        } else {
+            showResult();
+        }
+    }
 
     function showResult() {
-        showScreen(resultScreen);
+        activateScreen('result-screen');
+        switchBGM(bgmResult);
         
         // Calculate score (10 points per correct answer)
         const totalScore = score * 10;
         const maxScore = currentQuestions.length * 10;
         
-        // Display score: "〇点（〇問中〇問正解）"
-        resultScore.textContent = `${totalScore}点`;
+        // Display score
+        document.getElementById('final-score-value').textContent = totalScore;
         
-        // Display time (convert to fixed decimal)
-        resultTime.textContent = `${totalTime.toFixed(1)}秒`;
+        // Display time in "ふん" and "びょう" format (divide totalTime into minutes and seconds)
+        const totalSeconds = Math.round(totalTime);
+        const minutes = Math.floor(totalSeconds / 60);
+        const seconds = totalSeconds % 60;
+        const timeText = minutes > 0 ? minutes + 'ふん' + seconds + 'びょう' : seconds + 'びょう';
+        document.getElementById('final-time-value').textContent = timeText;
         
         // Calculate rank based on percentage
         const percentage = (score / currentQuestions.length) * 100;
@@ -299,11 +480,30 @@ document.addEventListener('DOMContentLoaded', () => {
         } else {
             rank = 'Cランク 🔰';
         }
-        resultRank.textContent = rank;
+        finalRankText.textContent = rank;
     }
 
     function resetQuiz() {
-        showScreen(startScreen);
+        // Reset quiz state
+        score = 0;
+        currentQuestionIndex = 0;
+        totalTime = 0;
+        isAnswering = false;
+        currentDifficulty = null;
+        
+        // Stop timer
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        
+        // Clear question data
+        currentQuestions = [];
+        optionKeys = [];
+        
+        // Go to title screen
+        switchBGM(bgmHome);
+        activateScreen('start-screen');
     }
 
     function playAgain() {
@@ -323,16 +523,18 @@ document.addEventListener('DOMContentLoaded', () => {
             loadRulesAndStart(currentDifficulty);
         } else {
             // Fallback to title screen if no difficulty was saved
-            showScreen(startScreen);
+            activateScreen('start-screen');
         }
     }
 
     function showHowToPlay() {
-        showScreen(howToPlayScreen);
+        activateScreen('how-to-play-screen');
     }
 
     function backToTitle() {
-        showScreen(startScreen);
+        timerInterval && clearInterval(timerInterval);
+        switchBGM(bgmHome);
+        activateScreen('start-screen');
     }
 
     function showInterruptDialog() {
@@ -344,21 +546,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function interruptQuiz() {
+        // Hide dialog first
         hideInterruptDialog();
-        resetQuiz();
+        
+        // Reset all quiz state
+        score = 0;
+        currentQuestionIndex = 0;
+        totalTime = 0;
+        isAnswering = false;
+        currentDifficulty = null;
+        
+        // Stop timer
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        
+        // Clear question data
+        currentQuestions = [];
+        optionKeys = [];
+        
+        // Switch to home BGM
+        switchBGM(bgmHome);
+        
+        // Go to title screen
+        activateScreen('start-screen');
     }
 
     function updateScoreDisplay() {
-        currentScoreDisplay.textContent = score;
-    }
-
-    function showScreen(screen) {
-        [startScreen, quizScreen, resultScreen, howToPlayScreen].forEach(s => {
-            s.classList.remove('active');
-            s.classList.add('hidden');
-        });
-        screen.classList.remove('hidden');
-        screen.classList.add('active');
+        scoreDisplay.textContent = `スコア: ${score}`;
     }
 
     // Utility: Fisher-Yates Shuffle
